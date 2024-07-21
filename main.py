@@ -49,15 +49,17 @@ def main():
         "description": []
     }).to_csv("villas.csv", index=False)
     c = 0
-    url = "https://om.opensooq.com/en/real-estate-for-rent/villa-palace-for-rent"
+    urlText = "https://om.opensooq.com/en/real-estate-for-rent/villa-palace-for-rent"
+    # create lamda function to create the url with the page if the page is greater than 1
+    url = lambda c: urlText if c == 0 else f"{urlText}?search=true&page={c}"
     while True:
-        html_content = get_data(url)
+        url_ = url(c)
+        html_content = get_data(url_)
         data = extract_json_from_html(html_content)
         save_data(data)
         if get_number_of_villas(data) < 30:
             break
         c += 1
-        url = f"{url}?page={c}"
         print(f"Scraping page {c}")
 if __name__ == "__main__":
     main()
